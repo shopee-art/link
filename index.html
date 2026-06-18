@@ -7,6 +7,10 @@
 
 <title>Produk Pilihan</title>
 
+<!-- Fav Icon Shopee -->
+<link rel="icon"
+href="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/icon_favicon_1_32.0Wecxv.png">
+
 <style>
 
 *{
@@ -47,15 +51,11 @@ border-radius:6px;
 outline:none;
 }
 
-/* Container */
-
 .container{
 max-width:1200px;
 margin:auto;
 padding:10px;
 }
-
-/* Grid */
 
 .grid{
 display:grid;
@@ -64,131 +64,112 @@ gap:8px;
 }
 
 @media(min-width:768px){
-
 .grid{
 grid-template-columns:repeat(5,1fr);
 }
-
 }
 
-/* Card */
-
 .card{
-
 position:relative;
-
 background:white;
-
 border-radius:10px;
-
 overflow:hidden;
-
-box-shadow:
-0 2px 8px rgba(0,0,0,.08);
-
+box-shadow:0 2px 8px rgba(0,0,0,.08);
 transition:.2s;
-
 }
 
 .card:hover{
-
 transform:translateY(-3px);
-
 }
-
-/* Nomor */
 
 .badge{
-
 position:absolute;
-
 top:8px;
 left:8px;
-
 background:#ee4d2d;
 color:white;
-
 padding:4px 8px;
-
 font-size:12px;
 font-weight:bold;
-
 border-radius:20px;
-
 z-index:10;
-
 }
 
-/* Gambar */
-
 .image{
-
 width:100%;
 aspect-ratio:1/1;
 object-fit:cover;
-
 background:#eee;
-
 }
-
-/* Content */
 
 .content{
 padding:8px;
 }
 
 .nama{
-
 font-size:13px;
-
 line-height:1.4;
-
 height:36px;
-
 overflow:hidden;
-
 margin-bottom:8px;
-
 }
 
 .btn{
-
 display:block;
-
 width:100%;
-
 background:#ee4d2d;
-
 color:white;
-
 padding:8px;
-
 border-radius:5px;
-
 text-align:center;
-
 text-decoration:none;
-
 font-size:12px;
 font-weight:bold;
+}
+
+/* Loading */
+
+.loading-wrap{
+display:flex;
+justify-content:center;
+align-items:center;
+height:250px;
+flex-direction:column;
+gap:15px;
+}
+
+.spinner{
+
+width:45px;
+height:45px;
+
+border:5px solid #ffd2c8;
+border-top:5px solid #ee4d2d;
+
+border-radius:50%;
+
+animation:spin .8s linear infinite;
 
 }
 
-.btn:hover{
-
-background:#d73211;
-
+.loading-text{
+color:#666;
+font-size:14px;
 }
 
-.loading{
+@keyframes spin{
 
-text-align:center;
-padding:30px;
+0%{
+transform:rotate(0deg);
+}
+
+100%{
+transform:rotate(360deg);
+}
 
 }
 
 </style>
-
 </head>
 
 <body>
@@ -215,7 +196,11 @@ placeholder="Cari produk..."
 class="grid"
 id="list">
 
-<div class="loading">
+<div class="loading-wrap">
+
+<div class="spinner"></div>
+
+<div class="loading-text">
 
 Memuat produk...
 
