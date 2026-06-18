@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,57 +9,165 @@
 
 <style>
 
-body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
+*{
 margin:0;
-padding:20px;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
-.container{
-max-width:900px;
-margin:auto;
+body{
+background:#f5f5f5;
 }
 
-h1{
+/* Header */
+
+.header{
+
+background:#ee4d2d;
+padding:15px;
+position:sticky;
+top:0;
+z-index:1000;
+
+box-shadow:
+0 2px 8px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+color:white;
+font-size:28px;
+font-weight:bold;
+
 text-align:center;
-margin-bottom:30px;
+
+}
+
+.search-container{
+
+margin-top:15px;
+
+display:flex;
+justify-content:center;
+
 }
 
 .search{
+
 width:100%;
-padding:12px;
-margin-bottom:20px;
-border-radius:10px;
-border:1px solid #ddd;
+max-width:700px;
+
+padding:14px;
+
+border:none;
+border-radius:6px;
+
 font-size:16px;
+
+outline:none;
+
 }
+
+/* Container */
+
+.container{
+
+max-width:1200px;
+margin:auto;
+padding:20px;
+
+}
+
+/* Product Grid */
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fill,minmax(220px,1fr));
+
+gap:18px;
+
+}
+
+/* Product Card */
 
 .card{
 
 background:white;
-padding:15px;
-margin-bottom:15px;
-border-radius:12px;
+
+border-radius:8px;
+
+overflow:hidden;
+
+transition:.3s;
+
+cursor:pointer;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
 
 box-shadow:
-0 2px 10px rgba(0,0,0,.1);
+0 8px 25px rgba(0,0,0,.15);
+
+}
+
+.image{
+
+height:180px;
+
+background:
+linear-gradient(
+135deg,
+#ff7b54,
+#ee4d2d
+);
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:60px;
+
+color:white;
+
+}
+
+.content{
+
+padding:15px;
 
 }
 
 .nama{
 
-font-size:18px;
-font-weight:bold;
-margin-bottom:10px;
+font-size:15px;
+
+height:45px;
+
+overflow:hidden;
+
+margin-bottom:12px;
+
+line-height:1.4;
 
 }
 
 .btn{
 
-display:inline-block;
+display:block;
 
-padding:10px 15px;
+text-align:center;
+
+padding:10px;
 
 background:#ee4d2d;
 
@@ -67,13 +175,27 @@ color:white;
 
 text-decoration:none;
 
-border-radius:8px;
+border-radius:4px;
+
+font-size:14px;
+
+font-weight:bold;
 
 }
 
 .btn:hover{
 
-opacity:.9;
+background:#d73211;
+
+}
+
+/* Footer */
+
+.footer{
+
+text-align:center;
+padding:25px;
+color:#888;
 
 }
 
@@ -83,9 +205,15 @@ opacity:.9;
 
 <body>
 
-<div class="container">
+<div class="header">
 
-<h1>🛒 Rekomendasi Produk Shopee</h1>
+<div class="logo">
+
+🛒 Produk Pilihan
+
+</div>
+
+<div class="search-container">
 
 <input
 type="text"
@@ -94,7 +222,24 @@ id="search"
 placeholder="Cari produk..."
 >
 
-<div id="list"></div>
+</div>
+
+</div>
+
+<div class="container">
+
+<div
+class="grid"
+id="list"
+>
+
+</div>
+
+</div>
+
+<div class="footer">
+
+Affiliate Product Recommendation
 
 </div>
 
@@ -102,11 +247,6 @@ placeholder="Cari produk..."
 
 const spreadsheetId =
 "1Ax-h56qMf8ahbz2ji9K57f47Kb0p80CiQv3ZDEk8m6Y";
-
-/*
-gid=0 biasanya sheet pertama
-ubah jika sheet berbeda
-*/
 
 const gid="0";
 
@@ -127,11 +267,7 @@ await response.text();
 
 const json=
 JSON.parse(
-text.substr(
-47
-).slice(
-0,-2
-)
+text.substr(47).slice(0,-2)
 );
 
 const rows=
@@ -140,14 +276,9 @@ json.table.rows;
 products=
 rows.map(row=>({
 
-no:
-row.c[0]?.v || "",
-
-nama:
-row.c[1]?.v || "",
-
-link:
-row.c[2]?.v || ""
+no:row.c[0]?.v || "",
+nama:row.c[1]?.v || "",
+link:row.c[2]?.v || ""
 
 }));
 
@@ -158,9 +289,7 @@ render(products);
 document.getElementById(
 "list"
 ).innerHTML=
-"Gagal memuat data";
-
-console.log(err);
+"<h3>Gagal memuat data</h3>";
 
 }
 
@@ -175,6 +304,14 @@ data.forEach(item=>{
 html+=`
 
 <div class="card">
+
+<div class="image">
+
+🛍️
+
+</div>
+
+<div class="content">
 
 <div class="nama">
 
@@ -191,6 +328,8 @@ target="_blank"
 Lihat Produk
 
 </a>
+
+</div>
 
 </div>
 
@@ -235,3 +374,4 @@ loadData();
 
 </body>
 </html>
+```
