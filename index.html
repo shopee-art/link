@@ -1,11 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Produk Rekomendasi Shopee</title>
+<title>Produk Pilihan</title>
 
 <style>
 
@@ -20,182 +19,139 @@ body{
 background:#f5f5f5;
 }
 
-/* Header */
-
 .header{
 
 background:#ee4d2d;
-padding:15px;
+padding:10px;
 position:sticky;
 top:0;
 z-index:1000;
-
-box-shadow:
-0 2px 8px rgba(0,0,0,.15);
 
 }
 
 .logo{
 
 color:white;
-font-size:28px;
+font-size:22px;
 font-weight:bold;
-
 text-align:center;
-
-}
-
-.search-container{
-
-margin-top:15px;
-
-display:flex;
-justify-content:center;
+margin-bottom:10px;
 
 }
 
 .search{
 
 width:100%;
-max-width:700px;
-
-padding:14px;
-
+padding:12px;
 border:none;
 border-radius:6px;
-
-font-size:16px;
-
 outline:none;
 
 }
 
-/* Container */
-
 .container{
 
+padding:10px;
 max-width:1200px;
 margin:auto;
-padding:20px;
 
 }
-
-/* Product Grid */
 
 .grid{
 
 display:grid;
 
+/* HP: 2 kolom */
 grid-template-columns:
-repeat(auto-fill,minmax(220px,1fr));
+repeat(2,1fr);
 
-gap:18px;
+gap:8px;
 
 }
 
-/* Product Card */
+/* Desktop */
+@media(min-width:768px){
+
+.grid{
+
+grid-template-columns:
+repeat(5,1fr);
+
+}
+
+}
 
 .card{
 
 background:white;
-
 border-radius:8px;
-
 overflow:hidden;
 
-transition:.3s;
+box-shadow:
+0 2px 6px rgba(0,0,0,.08);
 
-cursor:pointer;
+transition:.2s;
 
 }
 
 .card:hover{
 
-transform:translateY(-5px);
-
-box-shadow:
-0 8px 25px rgba(0,0,0,.15);
+transform:translateY(-2px);
 
 }
 
 .image{
 
-height:180px;
-
-background:
-linear-gradient(
-135deg,
-#ff7b54,
-#ee4d2d
-);
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:60px;
-
-color:white;
+width:100%;
+aspect-ratio:1/1;
+object-fit:cover;
+background:#eee;
 
 }
 
 .content{
 
-padding:15px;
+padding:8px;
 
 }
 
 .nama{
 
-font-size:15px;
-
-height:45px;
+font-size:13px;
+line-height:1.4;
+height:36px;
 
 overflow:hidden;
 
-margin-bottom:12px;
-
-line-height:1.4;
+margin-bottom:8px;
 
 }
 
 .btn{
 
 display:block;
-
-text-align:center;
-
-padding:10px;
+width:100%;
 
 background:#ee4d2d;
 
 color:white;
-
 text-decoration:none;
+
+padding:8px;
+
+text-align:center;
 
 border-radius:4px;
 
-font-size:14px;
-
+font-size:12px;
 font-weight:bold;
 
 }
 
-.btn:hover{
+.loading{
 
-background:#d73211;
-
-}
-
-/* Footer */
-
-.footer{
-
+padding:30px;
 text-align:center;
-padding:25px;
-color:#888;
 
 }
 
@@ -213,16 +169,11 @@ color:#888;
 
 </div>
 
-<div class="search-container">
-
 <input
-type="text"
-class="search"
 id="search"
+class="search"
 placeholder="Cari produk..."
 >
-
-</div>
 
 </div>
 
@@ -230,22 +181,19 @@ placeholder="Cari produk..."
 
 <div
 class="grid"
-id="list"
->
+id="list">
 
+<div class="loading">
+Memuat produk...
 </div>
 
 </div>
-
-<div class="footer">
-
-Affiliate Product Recommendation
 
 </div>
 
 <script>
 
-const spreadsheetId =
+const spreadsheetId=
 "1Ax-h56qMf8ahbz2ji9K57f47Kb0p80CiQv3ZDEk8m6Y";
 
 const gid="0";
@@ -254,6 +202,37 @@ const url=
 `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
 
 let products=[];
+
+
+async function getImage(link){
+
+try{
+
+const proxy=
+`https://api.allorigins.win/raw?url=${encodeURIComponent(link)}`;
+
+const res=
+await fetch(proxy);
+
+const html=
+await res.text();
+
+const match=
+html.match(
+/property="og:image".*?content="(.*?)"/
+);
+
+return match?.[1] ||
+"https://placehold.co/300x300?text=Produk";
+
+}catch{
+
+return "https://placehold.co/300x300?text=Produk";
+
+}
+
+}
+
 
 async function loadData(){
 
@@ -276,24 +255,35 @@ json.table.rows;
 products=
 rows.map(row=>({
 
-no:row.c[0]?.v || "",
 nama:row.c[1]?.v || "",
-link:row.c[2]?.v || ""
+
+link:row.c[2]?.v || "",
+
+img:""
 
 }));
 
+
+for(let item of products){
+
+item.img=
+await getImage(item.link);
+
 render(products);
 
-}catch(err){
+}
+
+}catch(e){
 
 document.getElementById(
 "list"
 ).innerHTML=
-"<h3>Gagal memuat data</h3>";
+"Gagal memuat data";
 
 }
 
 }
+
 
 function render(data){
 
@@ -305,11 +295,11 @@ html+=`
 
 <div class="card">
 
-<div class="image">
-
-🛍️
-
-</div>
+<img
+class="image"
+src="${item.img}"
+loading="lazy"
+>
 
 <div class="content">
 
@@ -321,11 +311,10 @@ ${item.nama}
 
 <a
 class="btn"
-href="${item.link}"
 target="_blank"
->
+href="${item.link}">
 
-Lihat Produk
+Lihat
 
 </a>
 
@@ -343,10 +332,9 @@ document.getElementById(
 
 }
 
+
 document
-.getElementById(
-"search"
-)
+.getElementById("search")
 .addEventListener(
 "input",
 function(){
@@ -366,6 +354,7 @@ item.nama
 render(filtered);
 
 }
+
 );
 
 loadData();
@@ -374,4 +363,3 @@ loadData();
 
 </body>
 </html>
-```
