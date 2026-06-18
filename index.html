@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -19,76 +20,71 @@ body{
 background:#f5f5f5;
 }
 
-.header{
+/* Header */
 
+.header{
 background:#ee4d2d;
 padding:10px;
 position:sticky;
 top:0;
 z-index:1000;
-
+box-shadow:0 2px 8px rgba(0,0,0,.15);
 }
 
 .logo{
-
 color:white;
 font-size:22px;
 font-weight:bold;
 text-align:center;
 margin-bottom:10px;
-
 }
 
 .search{
-
 width:100%;
 padding:12px;
 border:none;
 border-radius:6px;
 outline:none;
-
 }
+
+/* Container */
 
 .container{
-
-padding:10px;
 max-width:1200px;
 margin:auto;
-
+padding:10px;
 }
+
+/* Grid */
 
 .grid{
-
 display:grid;
-
-/* HP: 2 kolom */
-grid-template-columns:
-repeat(2,1fr);
-
+grid-template-columns:repeat(2,1fr);
 gap:8px;
-
 }
 
-/* Desktop */
 @media(min-width:768px){
 
 .grid{
-
-grid-template-columns:
-repeat(5,1fr);
-
+grid-template-columns:repeat(5,1fr);
 }
 
 }
+
+/* Card */
 
 .card{
 
+position:relative;
+
 background:white;
-border-radius:8px;
+
+border-radius:10px;
+
 overflow:hidden;
 
 box-shadow:
-0 2px 6px rgba(0,0,0,.08);
+0 2px 8px rgba(0,0,0,.08);
 
 transition:.2s;
 
@@ -96,29 +92,57 @@ transition:.2s;
 
 .card:hover{
 
-transform:translateY(-2px);
+transform:translateY(-3px);
 
 }
+
+/* Nomor */
+
+.badge{
+
+position:absolute;
+
+top:8px;
+left:8px;
+
+background:#ee4d2d;
+color:white;
+
+padding:4px 8px;
+
+font-size:12px;
+font-weight:bold;
+
+border-radius:20px;
+
+z-index:10;
+
+}
+
+/* Gambar */
 
 .image{
 
 width:100%;
 aspect-ratio:1/1;
 object-fit:cover;
+
 background:#eee;
 
 }
 
+/* Content */
+
 .content{
-
 padding:8px;
-
 }
 
 .nama{
 
 font-size:13px;
+
 line-height:1.4;
+
 height:36px;
 
 overflow:hidden;
@@ -130,28 +154,36 @@ margin-bottom:8px;
 .btn{
 
 display:block;
+
 width:100%;
 
 background:#ee4d2d;
 
 color:white;
-text-decoration:none;
 
 padding:8px;
 
+border-radius:5px;
+
 text-align:center;
 
-border-radius:4px;
+text-decoration:none;
 
 font-size:12px;
 font-weight:bold;
 
 }
 
+.btn:hover{
+
+background:#d73211;
+
+}
+
 .loading{
 
-padding:30px;
 text-align:center;
+padding:30px;
 
 }
 
@@ -184,7 +216,9 @@ class="grid"
 id="list">
 
 <div class="loading">
+
 Memuat produk...
+
 </div>
 
 </div>
@@ -202,37 +236,6 @@ const url=
 `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
 
 let products=[];
-
-
-async function getImage(link){
-
-try{
-
-const proxy=
-`https://api.allorigins.win/raw?url=${encodeURIComponent(link)}`;
-
-const res=
-await fetch(proxy);
-
-const html=
-await res.text();
-
-const match=
-html.match(
-/property="og:image".*?content="(.*?)"/
-);
-
-return match?.[1] ||
-"https://placehold.co/300x300?text=Produk";
-
-}catch{
-
-return "https://placehold.co/300x300?text=Produk";
-
-}
-
-}
-
 
 async function loadData(){
 
@@ -255,25 +258,20 @@ json.table.rows;
 products=
 rows.map(row=>({
 
+no:row.c[0]?.v || "",
+
 nama:row.c[1]?.v || "",
 
 link:row.c[2]?.v || "",
 
-img:""
+gambar:row.c[3]?.v || 
+"https://placehold.co/300x300?text=No+Image"
 
 }));
 
-
-for(let item of products){
-
-item.img=
-await getImage(item.link);
-
 render(products);
 
-}
-
-}catch(e){
+}catch(err){
 
 document.getElementById(
 "list"
@@ -283,7 +281,6 @@ document.getElementById(
 }
 
 }
-
 
 function render(data){
 
@@ -295,9 +292,15 @@ html+=`
 
 <div class="card">
 
+<div class="badge">
+
+#${item.no}
+
+</div>
+
 <img
 class="image"
-src="${item.img}"
+src="${item.gambar}"
 loading="lazy"
 >
 
@@ -311,10 +314,11 @@ ${item.nama}
 
 <a
 class="btn"
+href="${item.link}"
 target="_blank"
-href="${item.link}">
+>
 
-Lihat
+Lihat Produk
 
 </a>
 
@@ -334,7 +338,9 @@ document.getElementById(
 
 
 document
-.getElementById("search")
+.getElementById(
+"search"
+)
 .addEventListener(
 "input",
 function(){
@@ -354,7 +360,6 @@ item.nama
 render(filtered);
 
 }
-
 );
 
 loadData();
